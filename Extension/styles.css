@@ -1,0 +1,13 @@
+body {
+  font-family: 'Arial', sans-serif;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input, button {
+  margin: 5px;
+  padding: 8px;
+  width: 90%;
+}
