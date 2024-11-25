@@ -4,19 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Form Filler Popup</title>
+    <title>Chrome Extension</title>
 </head>
 <body>
-    <h1>Job Application Assistant</h1>
+    <h1>Auto Form Filler</h1>
     <div>
         <input type="text" id="name" placeholder="Name">
+        <input type="text" id="experience" placeholder="Experience">
+        <input type="text" id="education" placeholder="Education">
+        <input type="text" id="skills" placeholder="Skills">
         <input type="email" id="email" placeholder="Email">
         <input type="url" id="portfolio" placeholder="Portfolio URL">
-        <button id="saveData">Save Data</button>
+        <input type="text" id="personal_summaries" placeholder="Personal summary">
     </div>
-    <div>
-        <button id="fillForm">Fill Form on Active Tab</button>
+    
+
+    <div id="fields-container"></div>
+    <div class="actions">
+        <button id="add-field">Add Field</button>
+        <button id="save-data">Save Data</button>
+        <button id="load-data">Load Data</button>
     </div>
-    <script src="popup.js"></script>
+
+
+    <script 
+    src="popup.js"
+    ></script>
 </body>
 </html>
