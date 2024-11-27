@@ -1,6 +1,3 @@
-// This script could be triggered by popup.js to interact directly with the forms
-// It would use the same autofillForm function defined in popup.js
-
 document.getElementById('saveData').addEventListener('click', () => {
   const userData = {
       name: document.getElementById('name').value,
