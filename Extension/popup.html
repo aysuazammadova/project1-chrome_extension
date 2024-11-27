@@ -18,17 +18,26 @@
         <input type="text" id="personal_summaries" placeholder="Personal summary">
     </div>
     
-
     <div id="fields-container"></div>
     <div class="actions">
         <button id="add-field">Add Field</button>
         <button id="save-data">Save Data</button>
-        <button id="load-data">Load Data</button>
+        <button id="fill-form">Fill Form</button>
     </div>
 
+    <div>
+        <h2>Automatic Cover Letter Generation</h2>
+        <input type="text" id="job-title" placeholder="Job Title">
+        <input type="text" id="company-name" placeholder="Company Name">
+        <button id="generate-cover-letter">Generate Cover Letter</button>
+    </div>
 
-    <script 
-    src="popup.js"
-    ></script>
+    <div id="mapping-container">
+        <h2>Field Mappings</h2>
+        <button id="add-mapping">Add Mapping</button>
+        <div id="mappings"></div>
+    </div>
+
+    <script src="popup.js"></script>
 </body>
 </html>
