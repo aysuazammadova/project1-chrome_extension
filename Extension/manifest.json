@@ -3,7 +3,7 @@
   "name": "Job Application Assistant",
   "version": "1.0",
   "description": "Automatically fills job application forms using data from LinkedIn and custom profiles.",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab", "scripting", "<all_urls>"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
