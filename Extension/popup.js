@@ -1,15 +1,30 @@
 document.getElementById('add-field').addEventListener('click', addCustomField);
 document.getElementById('add-mapping').addEventListener('click', addMapping);
 document.getElementById('save-data').addEventListener('click', saveUserData);
-document.getElementById('fill-form').addEventListener('click', fillForm);
+document.getElementById('fill-form').addEventListener('click', () => {
+    fillForm();
+    logApplication();
+});
 document.getElementById('generate-cover-letter').addEventListener('click', generateCoverLetter);
+document.getElementById('save-form').addEventListener('click', saveForm);
+document.getElementById('load-form').addEventListener('click', function() {
+    document.getElementById('import-data-input').click(); 
+});
+document.getElementById('import-data-input').addEventListener('change', importData);
+document.getElementById('export-data').addEventListener('click', exportData);
+document.getElementById('email-data').addEventListener('click', emailData);
+
+document.addEventListener('DOMContentLoaded', function () {
+    displayApplications();
+    displaySavedForms();
+});
 
 function addCustomField() {
     const container = document.getElementById('fields-container');
     const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = 'New Field';
-    input.className = 'custom-field'; 
+    input.className = 'custom-field';
     container.appendChild(input);
 }
 
@@ -34,7 +49,7 @@ function saveUserData() {
     };
 
     document.querySelectorAll('.custom-field').forEach((field, index) => {
-        if (field.value) { 
+        if (field.value) {
             userData[`customField${index + 1}`] = field.value;
         }
     });
@@ -66,8 +81,8 @@ function generateCoverLetter() {
     const companyName = document.getElementById('company-name').value;
     const personalSummary = document.getElementById('personal_summaries').value;
     
-    const apiURL = 'https://api.example.com/generateCoverLetter'; //API, URL must be changed
-    const apiKey = 'your-api-token-here';
+    const apiURL = 'https://api.example.com/generateCoverLetter'; //must be changed
+    const apiKey = 'your-api-token-here';//must be changed
 
     fetch(apiURL, {
         method: 'POST',
@@ -98,3 +113,74 @@ function displayCoverLetter(coverLetter) {
         container.textContent = coverLetter;
     }
 }
+
+function saveForm() {
+    const formData = {
+        name: document.getElementById('name').value,
+        experience: document.getElementById('experience').value,
+        education: document.getElementById('education').value,
+        skills: document.getElementById('skills').value,
+        email: document.getElementById('email').value,
+        portfolio: document.getElementById('portfolio').value,
+        personal_summaries: document.getElementById('personal_summaries').value,
+        jobTitle: document.getElementById('job-title').value,
+        companyName: document.getElementById('company-name').value
+    };
+
+    chrome.storage.local.get({ savedForms: [] }, function (result) {
+        const savedForms = result.savedForms;
+        savedForms.push(formData);
+        chrome.storage.local.set({ savedForms: savedForms }, function () {
+            console.log('Form data saved.');
+            displaySavedForms();
+        });
+    });
+}
+
+function importData(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function() {
+        const data = JSON.parse(this.result);
+        chrome.storage.local.set(data, function() {
+            console.log('Data imported successfully.');
+            displayApplications();
+            displaySavedForms();
+        });
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
+
+function exportData() {
+    chrome.storage.local.get(null, function(items) {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", "extension_data.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    });
+}
+
+function emailData() {
+    chrome.storage.local.get(null, function(items) {
+        const dataStr = encodeURIComponent(JSON.stringify(items));
+        const subject = encodeURIComponent("Backup of My Extension Data");
+        const emailBody = "Here is a backup of my extension data:\n" + dataStr;
+        window.open(`mailto:?subject=${subject}&body=${emailBody}`);
+    });
+}
+
+function displaySavedForms() {
+    chrome.storage.local.get('savedForms', function (result) {
+        const savedForms = result.savedForms || [];
+        const dropdown = document.getElementById('saved-forms-dropdown');
+        dropdown.innerHTML = '';
+        savedForms.forEach((form, index) => {
+            const option = document.createElement('option');
+            option.text = `Form ${index + 1}: ${form.companyName || 'Unknown'}`;
+            dropdown.add(option);
+        });
+    });
+}
+

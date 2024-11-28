@@ -38,6 +38,43 @@
         <div id="mappings"></div>
     </div>
 
+
+    <div id="application-dashboard">
+        <h2>Job Application Dashboard</h2>
+        <table id="applications-table">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Date Applied</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamically filled rows will go here -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <div id="form-storage">
+        <h2>Stored Forms</h2>
+        <button id="save-form">Save Form</button>
+        <button id="load-form">Load Form</button>
+        <select id="saved-forms-dropdown">
+            <!-- Dynamically filled options will go here -->
+        </select>
+    </div>
+
+    
+    <div id="data-transfer">
+        <h2>Data Transfer</h2>
+        <button id="export-data">Export Data</button>
+        <input type="file" id="import-data-input" style="display: none;">
+        <button id="import-data">Import Data</button>
+        <button id="email-data">Email Data</button>
+    </div>
+    
     <script src="popup.js"></script>
 </body>
 </html>
