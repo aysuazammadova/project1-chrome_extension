@@ -8,7 +8,21 @@
 </head>
 <body>
     <h1>Auto Form Filler</h1>
+
     <div>
+        <label for="profileSelector">Active Profile:</label>
+        <select id="profileSelector"></select>
+        <button id="editProfile">Edit Profile</button>
+        <button id="newProfile">Create New Profile</button>
+    </div>
+
+
+    <div id="profileForm" style="display: none;">
+        <h4 id="formTitle">New Profile</h4>
+        <label for="profileName">Profile Name:</label>
+        <input type="text" id="profileName" placeholder="Profile Name"/>
+
+        <h3>Profile Data</h3>
         <input type="text" id="name" placeholder="Name">
         <input type="text" id="experience" placeholder="Experience">
         <input type="text" id="education" placeholder="Education">
@@ -16,6 +30,13 @@
         <input type="email" id="email" placeholder="Email">
         <input type="url" id="portfolio" placeholder="Portfolio URL">
         <input type="text" id="personal_summaries" placeholder="Personal summary">
+
+        <h3>Custom Fields</h3>
+        <div id="fields-container"></div>
+        <button id="add-field">Add Field</button>
+
+        <button id="saveProfile">Save Profile</button>
+        <button id="cancelProfile">Cancel</button>
     </div>
     
     <div id="fields-container"></div>
@@ -75,6 +96,17 @@
         <button id="email-data">Email Data</button>
     </div>
     
+    </div>
+    
+    <!--
+        <div class="actions">
+            <button id="save-data">Save Data</button>
+            <button id="load-data">Load Data</button>
+        </div>
+    -->
+    
+
     <script src="popup.js"></script>
 </body>
+<script src="popup.js"></script>
 </html>
