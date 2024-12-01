@@ -585,6 +585,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const importDataButton = document.getElementById('importData');
     const emailDataButton = document.getElementById('emailData');
     const applicationDashboard = document.getElementById('applicationDashboard');
+    const addJobApplicationButton = document.getElementById("addJobApplication");
+    const restoreJobApplicationButton = document.getElementById("restoreJobApplications");
     const addJobApplicationButton = document.getElementById('addJobApplication');
     const importDataInput = document.getElementById('importDataInput');
   
@@ -597,6 +599,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let profiles = {};
     let currentProfile = 'default';
     let applications = [];
+    let mappings = [];
+    let savedForms = [];  
+
+    chrome.storage.local.get(['profiles', 'applications', 'mappings', 'savedForms'], (result) => {
+      profiles = result.profiles || { default: {} };
+      applications = result.applications || [];
+      mappings = result.mappings || [];
+      savedForms = result.savedForms || [];
+
+
+      populateProfileSelector();
+      populateProfileDetails();
+      populateApplicationDashboard();
+      populateMappingList();
+      populateSavedFormsList();
   
     chrome.storage.local.get(['profiles', 'applications'], (result) => {
       profiles = result.profiles || { default: {} };
@@ -657,7 +674,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
+
+    function populateSavedFormsList(){
+        const savedFormsList = document.getElementById("savedFormsList");
+        savedFormsList.innerHTML = '';
+        savedForms.forEach((form, index) =>{
+            const li = document.createElement('li');
+            li.textContent = `${form.jobTitle} at ${form.companyName} (Saved on: ${form.dateApplied})`;
+
+            const restoreButton = document.createElement('button');
+            restoreButton.textContent = "Restore";
+            restoreButton.addEventListener("click", () =>{
+                restoreSavedForm(form);
+            });
+
+            li.appendChild(restoreButton);
+            savedFormsList.appendChild(li);
+        });
+    }
   
+    function restoreSavedForm(formData){
+        const jobTitleInput = document.getElementById("jobTitle");
+        const companyNameInput = document.getElementById("companyName");
+        const dateAppliedInput = document.getElementById("dateApplied");
+        const statusInput = document.getElementById("status");
+
+        jobTitleInput.value = formData.jobTitle;
+        companyNameInput.value = formData.companyName;
+        dateAppliedInput.value = formData.dateApplied;
+        statusInput.value = formData.status;
+
+        alert("Form restored! You can now continue filling out the application.");
+    }
+
+
     addProfileButton.addEventListener('click', () => {
       const profileName = prompt('Enter profile name:');
       if (profileName && !profiles[profileName]) {
@@ -754,5 +804,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         alert('Please fill in all fields.');
       }
+    });
+
+    restoreJobApplicationButton.addEventListener("click", () =>{
+        populateApplicationDashboard();
     });
   });
