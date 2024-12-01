@@ -19,6 +19,8 @@ input {
   border-color: rgb(7, 118, 222);
   box-shadow: none;
   background-color: rgb(255, 255, 255);
+  border-width: 3px;
+  border-style: solid;
 }
 
 input::placeholder {
@@ -38,4 +40,22 @@ button {
   background-color: rgb(38, 144, 230);
   color: white;
   cursor: pointer;
+}
+
+select {
+  font-family: Arial, sans-serif;
+  border-color: rgb(7, 118, 222);
+  margin: 5px; 
+  margin-right: 100px;
+}
+
+textarea {
+  font-family: Arial, sans-serif;
+  border-color: rgb(7, 118, 222);
+  border-width: 3px;
+}
+
+textarea::placeholder {
+  color: rgb(38, 144, 230); 
+  font-style: italic; 
 }
