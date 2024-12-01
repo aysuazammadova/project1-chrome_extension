@@ -361,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportDataButton = document.getElementById('exportData');
     const importDataButton = document.getElementById('importData');
     const applicationDashboard = document.getElementById('applicationDashboard');
+    const addJobApplicationButton = document.getElementById("addJobApplication");
   
     const profileNameInput = document.getElementById('profileName');
     const profileSurnameInput = document.getElementById('profileSurname');
@@ -419,9 +420,20 @@ document.addEventListener('DOMContentLoaded', () => {
   
     function populateApplicationDashboard() {
       applicationDashboard.innerHTML = '';
-      applications.forEach((app) => {
+      applications.forEach((app, index) => {
         const li = document.createElement('li');
         li.textContent = `${app.companyName} - ${app.jobTitle} (Applied: ${app.date})`;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Delete";
+
+
+        deleteButton.addEventListener("click", () =>{
+            applications.splice(index, 1);
+            chrome.storage.local.set({ applications},populateApplicationDashboard);
+        });
+
+        li.appendChild(deleteButton);
         applicationDashboard.appendChild(li);
       });
     }
@@ -529,5 +541,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mappings.push({ profileField, formField });
         chrome.storage.local.set({ mappings }, populateMappingList);
+    });
+
+    addJobApplicationButton.addEventListener("click", () =>{
+        const jobTitle = prompt("Enter job title:");
+        const companyName = prompt("Enter company name:");
+        const dateApplied = prompt("Enter date applied (YYYY-MM-DD):");
+        const status = prompt("Enter application status (e.g., Applied, Interviewing, Hired):");
+
+        if (jobTitle && companyName && dateApplied && status) {
+            applications.push({ jobTitle, companyName, date: dateApplied, status });
+            chrome.storage.local.set({applications}, populateApplicationDashboard);
+        } else {
+            alert("Please fill in all fields.");
+        }
     });
   });
