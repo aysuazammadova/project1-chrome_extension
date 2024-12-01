@@ -349,148 +349,278 @@ function displaySavedForms() {
 
 */
 
-let profiles = [];
-let activeProfileIndex = 0;
+// let profiles = [];
+// let activeProfileIndex = 0;
 
-chrome.storage.local.get("profiles", (data) => {
-    profiles = data.profiles || [];
-    activeProfileIndex = data.activeProfile || 0;
-    renderProfiles();
-    renderProfileData();
-});
+// chrome.storage.local.get("profiles", (data) => {
+//     profiles = data.profiles || [];
+//     activeProfileIndex = data.activeProfile || 0;
+//     renderProfiles();
+//     renderProfileData();
+// });
 
-function renderProfiles() {
-    const profileSelector = document.getElementById("profileSelector");
-    profileSelector.innerHTML = "";
+// function renderProfiles() {
+//     const profileSelector = document.getElementById("profileSelector");
+//     profileSelector.innerHTML = "";
 
-    profiles.forEach((profile, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = profile.name;
+//     profiles.forEach((profile, index) => {
+//         const option = document.createElement("option");
+//         option.value = index;
+//         option.textContent = profile.name;
+//         profileSelector.appendChild(option);
+//     });
+
+//     profileSelector.value = activeProfileIndex;
+// }
+
+// function renderProfileData() {
+//     const selectedProfile = profiles[activeProfileIndex];
+//     if (selectedProfile) {
+//         const profileData = selectedProfile.data;
+
+//         document.getElementById("name").value = profileData.name || "";
+//         document.getElementById("experience").value = profileData.experience || "";
+//         document.getElementById("education").value = profileData.education || "";
+//         document.getElementById("skills").value = profileData.skills || "";
+//         document.getElementById("email").value = profileData.email || "";
+//         document.getElementById("portfolio").value = profileData.portfolio || "";
+//         document.getElementById("personal_summaries").value = profileData.personal_summary || "";
+
+//         const fieldsContainer = document.getElementById("fields-container");
+//         fieldsContainer.innerHTML = ""; 
+//         Object.entries(profileData).forEach(([key, value]) => {
+//             if (key.startsWith("customField")) {
+//                 const customFieldDiv = document.createElement("div");
+//                 customFieldDiv.innerHTML = `
+//                     <label for="${key}">${key}</label>
+//                     <input type="text" id="${key}" name="${key}" value="${value}">
+//                     <button class="remove-field" data-key="${key}">Remove</button>
+//                 `;
+//                 fieldsContainer.appendChild(customFieldDiv);
+//             }
+//         });
+//     }
+// }
+
+// document.getElementById("saveProfile").addEventListener("click", () => {
+//     const profileName = document.getElementById("profileName").value;
+//     const profileData = {
+//         name: document.getElementById("name").value,
+//         experience: document.getElementById("experience").value,
+//         education: document.getElementById("education").value,
+//         skills: document.getElementById("skills").value,
+//         email: document.getElementById("email").value,
+//         portfolio: document.getElementById("portfolio").value,
+//         personal_summary: document.getElementById("personal_summaries").value,
+//     };
+
+//     const fieldsContainer = document.getElementById("fields-container");
+//     const customFields = {};
+//     fieldsContainer.querySelectorAll("input").forEach(input => {
+//         customFields[input.name] = input.value;
+//     });
+
+//     profiles[activeProfileIndex] = {
+//         name: profileName,
+//         data: { ...profileData, ...customFields },
+//     };
+
+//     chrome.storage.local.set({ profiles }, () => {
+//         alert("Profile saved successfully!");
+//         renderProfiles();
+//         renderProfileData();
+//     });
+// });
+
+// document.getElementById("add-field").addEventListener("click", () => {
+//     const fieldName = prompt("Enter the custom field name:");
+//     if (fieldName) {
+//         const fieldsContainer = document.getElementById("fields-container");
+//         const customFieldDiv = document.createElement("div");
+//         customFieldDiv.innerHTML = `
+//             <label for="${fieldName}">${fieldName}</label>
+//             <input type="text" id="${fieldName}" name="${fieldName}">
+//             <button class="remove-field" data-key="${fieldName}">Remove</button>
+//         `;
+//         fieldsContainer.appendChild(customFieldDiv);
+//     }
+// });
+
+// document.getElementById("fields-container").addEventListener("click", (event) => {
+//     if (event.target.classList.contains("remove-field")) {
+//         const fieldKey = event.target.dataset.key;
+//         delete profiles[activeProfileIndex].data[fieldKey];
+//         renderProfileData();
+//     }
+// });
+
+// document.getElementById("profileSelector").addEventListener("change", (event) => {
+//     activeProfileIndex = parseInt(event.target.value, 10);
+//     chrome.storage.local.set({ activeProfile: activeProfileIndex }, () => {
+//         renderProfileData();
+//     });
+// });
+
+// document.getElementById("newProfile").addEventListener("click", () => {
+//     activeProfileIndex = profiles.length;
+//     profiles.push({
+//         name: "New Profile",
+//         data: {},
+//     });
+//     chrome.storage.local.set({ profiles, activeProfile: activeProfileIndex }, () => {
+//         renderProfiles();
+//         renderProfileData();
+//     });
+// });
+
+// document.getElementById("editProfile").addEventListener("click", () => {
+//     document.getElementById("profileForm").style.display = "block";
+//     const selectedProfile = profiles[activeProfileIndex];
+//     document.getElementById("profileName").value = selectedProfile.name;
+// });
+
+// document.getElementById("saveProfile").addEventListener("click", () => {
+//     const profileName = document.getElementById("profileName").value;
+//     const selectedProfile = profiles[activeProfileIndex];
+//     selectedProfile.name = profileName;
+
+//     chrome.storage.local.set({ profiles }, () => {
+//         renderProfiles();
+//         renderProfileData();
+//         document.getElementById("profileForm").style.display = "none";
+//     });
+// });
+
+// document.getElementById("cancelProfile").addEventListener("click", () => {
+//     document.getElementById("profileForm").style.display = "none";
+// });
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const profileSelector = document.getElementById('profileSelector');
+    const addProfileButton = document.getElementById('addProfile');
+    const deleteProfileButton = document.getElementById('deleteProfile');
+    const saveProfileDetailsButton = document.getElementById('saveProfileDetails');
+    const exportDataButton = document.getElementById('exportData');
+    const importDataButton = document.getElementById('importData');
+    const applicationDashboard = document.getElementById('applicationDashboard');
+  
+    const profileNameInput = document.getElementById('profileName');
+    const profileSurnameInput = document.getElementById('profileSurname');
+    const portfolioLinkInput = document.getElementById('portfolioLink');
+    const personalSummaryInput = document.getElementById('personalSummary');
+    const certificatesInput = document.getElementById('certificates');
+  
+    let profiles = {};
+    let currentProfile = 'default';
+    let applications = [];
+  
+    chrome.storage.local.get(['profiles', 'applications'], (result) => {
+      profiles = result.profiles || { default: {} };
+      applications = result.applications || [];
+      populateProfileSelector();
+      populateProfileDetails();
+      populateApplicationDashboard();
+    });
+  
+    profileSelector.addEventListener('change', (event) => {
+      currentProfile = event.target.value;
+      populateProfileDetails();
+    });
+  
+    function populateProfileSelector() {
+      profileSelector.innerHTML = '';
+      for (const profileName in profiles) {
+        const option = document.createElement('option');
+        option.value = profileName;
+        option.textContent = profileName;
         profileSelector.appendChild(option);
-    });
-
-    profileSelector.value = activeProfileIndex;
-}
-
-function renderProfileData() {
-    const selectedProfile = profiles[activeProfileIndex];
-    if (selectedProfile) {
-        const profileData = selectedProfile.data;
-
-        document.getElementById("name").value = profileData.name || "";
-        document.getElementById("experience").value = profileData.experience || "";
-        document.getElementById("education").value = profileData.education || "";
-        document.getElementById("skills").value = profileData.skills || "";
-        document.getElementById("email").value = profileData.email || "";
-        document.getElementById("portfolio").value = profileData.portfolio || "";
-        document.getElementById("personal_summaries").value = profileData.personal_summary || "";
-
-        const fieldsContainer = document.getElementById("fields-container");
-        fieldsContainer.innerHTML = ""; 
-        Object.entries(profileData).forEach(([key, value]) => {
-            if (key.startsWith("customField")) {
-                const customFieldDiv = document.createElement("div");
-                customFieldDiv.innerHTML = `
-                    <label for="${key}">${key}</label>
-                    <input type="text" id="${key}" name="${key}" value="${value}">
-                    <button class="remove-field" data-key="${key}">Remove</button>
-                `;
-                fieldsContainer.appendChild(customFieldDiv);
-            }
-        });
+      }
+      if (!profiles[currentProfile]) {
+        currentProfile = Object.keys(profiles)[0] || 'default';
+      }
+      profileSelector.value = currentProfile;
+      populateProfileDetails();
     }
-}
-
-document.getElementById("saveProfile").addEventListener("click", () => {
-    const profileName = document.getElementById("profileName").value;
-    const profileData = {
-        name: document.getElementById("name").value,
-        experience: document.getElementById("experience").value,
-        education: document.getElementById("education").value,
-        skills: document.getElementById("skills").value,
-        email: document.getElementById("email").value,
-        portfolio: document.getElementById("portfolio").value,
-        personal_summary: document.getElementById("personal_summaries").value,
-    };
-
-    const fieldsContainer = document.getElementById("fields-container");
-    const customFields = {};
-    fieldsContainer.querySelectorAll("input").forEach(input => {
-        customFields[input.name] = input.value;
-    });
-
-    profiles[activeProfileIndex] = {
-        name: profileName,
-        data: { ...profileData, ...customFields },
-    };
-
-    chrome.storage.local.set({ profiles }, () => {
-        alert("Profile saved successfully!");
-        renderProfiles();
-        renderProfileData();
-    });
-});
-
-document.getElementById("add-field").addEventListener("click", () => {
-    const fieldName = prompt("Enter the custom field name:");
-    if (fieldName) {
-        const fieldsContainer = document.getElementById("fields-container");
-        const customFieldDiv = document.createElement("div");
-        customFieldDiv.innerHTML = `
-            <label for="${fieldName}">${fieldName}</label>
-            <input type="text" id="${fieldName}" name="${fieldName}">
-            <button class="remove-field" data-key="${fieldName}">Remove</button>
-        `;
-        fieldsContainer.appendChild(customFieldDiv);
+  
+    function populateProfileDetails() {
+      const profileData = profiles[currentProfile] || {};
+      profileNameInput.value = profileData.name || '';
+      profileSurnameInput.value = profileData.surname || '';
+      portfolioLinkInput.value = profileData.portfolio || '';
+      personalSummaryInput.value = profileData.summary || '';
+      certificatesInput.value = profileData.certificates || '';
     }
-});
-
-document.getElementById("fields-container").addEventListener("click", (event) => {
-    if (event.target.classList.contains("remove-field")) {
-        const fieldKey = event.target.dataset.key;
-        delete profiles[activeProfileIndex].data[fieldKey];
-        renderProfileData();
+  
+    function populateApplicationDashboard() {
+      applicationDashboard.innerHTML = '';
+      applications.forEach((app) => {
+        const li = document.createElement('li');
+        li.textContent = `${app.companyName} - ${app.jobTitle} (Applied: ${app.date})`;
+        applicationDashboard.appendChild(li);
+      });
     }
-});
-
-document.getElementById("profileSelector").addEventListener("change", (event) => {
-    activeProfileIndex = parseInt(event.target.value, 10);
-    chrome.storage.local.set({ activeProfile: activeProfileIndex }, () => {
-        renderProfileData();
+  
+    addProfileButton.addEventListener('click', () => {
+      const profileName = prompt('Enter profile name:');
+      if (profileName && !profiles[profileName]) {
+        profiles[profileName] = {};
+        currentProfile = profileName;
+        chrome.storage.local.set({ profiles }, populateProfileSelector);
+      }
     });
-});
-
-document.getElementById("newProfile").addEventListener("click", () => {
-    activeProfileIndex = profiles.length;
-    profiles.push({
-        name: "New Profile",
-        data: {},
+  
+    deleteProfileButton.addEventListener('click', () => {
+      if (currentProfile === 'default') {
+        alert('Default profile cannot be deleted.');
+        return;
+      }
+      delete profiles[currentProfile];
+      currentProfile = Object.keys(profiles)[0] || 'default';
+      chrome.storage.local.set({ profiles }, populateProfileSelector);
     });
-    chrome.storage.local.set({ profiles, activeProfile: activeProfileIndex }, () => {
-        renderProfiles();
-        renderProfileData();
+  
+    saveProfileDetailsButton.addEventListener('click', () => {
+      const profileData = {
+        name: profileNameInput.value,
+        surname: profileSurnameInput.value,
+        portfolio: portfolioLinkInput.value,
+        summary: personalSummaryInput.value,
+        certificates: certificatesInput.value,
+      };
+      profiles[currentProfile] = profileData;
+      chrome.storage.local.set({ profiles }, () => {
+        alert('Profile details saved successfully!');
+      });
     });
-});
-
-document.getElementById("editProfile").addEventListener("click", () => {
-    document.getElementById("profileForm").style.display = "block";
-    const selectedProfile = profiles[activeProfileIndex];
-    document.getElementById("profileName").value = selectedProfile.name;
-});
-
-document.getElementById("saveProfile").addEventListener("click", () => {
-    const profileName = document.getElementById("profileName").value;
-    const selectedProfile = profiles[activeProfileIndex];
-    selectedProfile.name = profileName;
-
-    chrome.storage.local.set({ profiles }, () => {
-        renderProfiles();
-        renderProfileData();
-        document.getElementById("profileForm").style.display = "none";
+  
+    exportDataButton.addEventListener('click', () => {
+      const data = { profiles, applications };
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      chrome.downloads.download({ url, filename: 'form-filler-data.json' });
     });
-});
-
-document.getElementById("cancelProfile").addEventListener("click", () => {
-    document.getElementById("profileForm").style.display = "none";
-});
+  
+    importDataButton.addEventListener('click', () => {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'application/json';
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const data = JSON.parse(reader.result);
+          profiles = data.profiles || {};
+          applications = data.applications || [];
+          chrome.storage.local.set({ profiles, applications }, () => {
+            populateProfileSelector();
+            populateApplicationDashboard();
+          });
+        };
+        reader.readAsText(file);
+      });
+      fileInput.click();
+    });
+  });
