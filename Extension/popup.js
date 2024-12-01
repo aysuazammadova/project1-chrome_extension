@@ -353,6 +353,229 @@ function displaySavedForms() {
 
 
 
+
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const profileSelector = document.getElementById('profileSelector');
+//     const addProfileButton = document.getElementById('addProfile');
+//     const deleteProfileButton = document.getElementById('deleteProfile');
+//     const saveProfileDetailsButton = document.getElementById('saveProfileDetails');
+//     const exportDataButton = document.getElementById('exportData');
+//     const importDataButton = document.getElementById('importData');
+//     const applicationDashboard = document.getElementById('applicationDashboard');
+//     const addJobApplicationButton = document.getElementById("addJobApplication");
+  
+//     const profileNameInput = document.getElementById('profileName');
+//     const profileSurnameInput = document.getElementById('profileSurname');
+//     const portfolioLinkInput = document.getElementById('portfolioLink');
+//     const personalSummaryInput = document.getElementById('personalSummary');
+//     const certificatesInput = document.getElementById('certificates');
+
+//     const profileFieldInput = document.getElementById("profileField");
+//     const formFieldInput = document.getElementById("formField");
+//     const addMappingButton = document.getElementById("addMapping");
+//     const mappingList = document.getElementById("mappingList");
+  
+//     let profiles = {};
+//     let currentProfile = 'default';
+//     let applications = [];
+//     let mappings = [];
+  
+//     chrome.storage.local.get(['profiles', 'applications', 'mappings'], (result) => {
+//       profiles = result.profiles || { default: {} };
+//       applications = result.applications || [];
+//       mappings = result.mappings || [];
+//       populateProfileSelector();
+//       populateProfileDetails();
+//       populateApplicationDashboard();
+//       populateMappingList();
+//     });
+  
+//     profileSelector.addEventListener('change', (event) => {
+//       currentProfile = event.target.value;
+//       populateProfileDetails();
+//     });
+  
+//     function populateProfileSelector() {
+//       profileSelector.innerHTML = '';
+//       for (const profileName in profiles) {
+//         const option = document.createElement('option');
+//         option.value = profileName;
+//         option.textContent = profileName;
+//         profileSelector.appendChild(option);
+//       }
+//       if (!profiles[currentProfile]) {
+//         currentProfile = Object.keys(profiles)[0] || 'default';
+//       }
+//       profileSelector.value = currentProfile;
+//       populateProfileDetails();
+//     }
+  
+//     function populateProfileDetails() {
+//       const profileData = profiles[currentProfile] || {};
+//       profileNameInput.value = profileData.name || '';
+//       profileSurnameInput.value = profileData.surname || '';
+//       portfolioLinkInput.value = profileData.portfolio || '';
+//       personalSummaryInput.value = profileData.summary || '';
+//       certificatesInput.value = profileData.certificates || '';
+//     }
+  
+//     function populateApplicationDashboard() {
+//       applicationDashboard.innerHTML = '';
+//       applications.forEach((app, index) => {
+//         const li = document.createElement('li');
+//         li.textContent = `${app.companyName} - ${app.jobTitle} (Applied: ${app.date})`;
+
+//         const deleteButton = document.createElement('button');
+//         deleteButton.textContent = "Delete";
+
+
+//         deleteButton.addEventListener("click", () =>{
+//             applications.splice(index, 1);
+//             chrome.storage.local.set({ applications},populateApplicationDashboard);
+//         });
+
+//         li.appendChild(deleteButton);
+//         applicationDashboard.appendChild(li);
+//       });
+//     }
+
+//     function populateMappingList() {
+//         mappingList.innerHTML = '';
+//         mappings.forEach((mapping, index) => {
+//           const li = document.createElement('li');
+//           li.textContent = `${mapping.profileField} → ${mapping.formField}`;
+    
+//           const deleteButton = document.createElement('button');
+//           deleteButton.textContent = 'Delete';
+//           deleteButton.addEventListener('click', () => {
+//             mappings.splice(index, 1);
+//             chrome.storage.local.set({ mappings }, populateMappingList);
+//           });
+    
+//           li.appendChild(deleteButton);
+//           mappingList.appendChild(li);
+//         });
+
+
+//         profileFieldInput.innerHTML = '';
+//         const currentProfileData = profiles[currentProfile] || {};
+//         for (const key in currentProfileData){
+//             const option = document.createElement('option');
+//             option.value = key;
+//             option.textContent = key;
+//             profileFieldInput.appendChild(option);
+//         }
+
+//     }
+  
+//     addProfileButton.addEventListener('click', () => {
+//       const profileName = prompt('Enter profile name:');
+//       if (profileName && !profiles[profileName]) {
+//         profiles[profileName] = {};
+//         currentProfile = profileName;
+//         chrome.storage.local.set({ profiles }, populateProfileSelector);
+//       }
+//     });
+  
+//     deleteProfileButton.addEventListener('click', () => {
+//       if (currentProfile === 'default') {
+//         alert('Default profile cannot be deleted.');
+//         return;
+//       }
+//       delete profiles[currentProfile];
+//       currentProfile = Object.keys(profiles)[0] || 'default';
+//       chrome.storage.local.set({ profiles }, populateProfileSelector);
+//     });
+  
+//     saveProfileDetailsButton.addEventListener('click', () => {
+//       const profileData = {
+//         name: profileNameInput.value,
+//         surname: profileSurnameInput.value,
+//         portfolio: portfolioLinkInput.value,
+//         summary: personalSummaryInput.value,
+//         certificates: certificatesInput.value,
+//       };
+//       profiles[currentProfile] = profileData;
+//       chrome.storage.local.set({ profiles }, () => {
+//         alert('Profile details saved successfully!');
+//       });
+//     });
+  
+//     exportDataButton.addEventListener('click', () => {
+//       const data = { profiles, applications };
+//       const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+//       const url = URL.createObjectURL(blob);
+//       chrome.downloads.download({ url, filename: 'form-filler-data.json' });
+//     });
+  
+//     importDataButton.addEventListener('click', () => {
+//       const fileInput = document.createElement('input');
+//       fileInput.type = 'file';
+//       fileInput.accept = 'application/json';
+//       fileInput.addEventListener('change', (event) => {
+//         const file = event.target.files[0];
+//         const reader = new FileReader();
+//         reader.onload = () => {
+//           const data = JSON.parse(reader.result);
+//           profiles = data.profiles || {};
+//           applications = data.applications || [];
+//           mappings = data.mappings || [];
+//           chrome.storage.local.set({ profiles, applications }, () => {
+//             populateProfileSelector();
+//             populateApplicationDashboard();
+//             populateMappingList();
+//           });
+//         };
+//         reader.readAsText(file);
+//       });
+//       fileInput.click();
+//     });
+
+//     addMappingButton.addEventListener("click", ()=>{
+//         const profileField = profileFieldInput.value;
+//         const formField = formFieldInput.value;
+
+//         if(!profileField || !formField){
+//             alert('Both fields are required.');
+//             return;
+//         }
+
+//         mappings.push({ profileField, formField });
+//         chrome.storage.local.set({ mappings }, populateMappingList);
+//     });
+
+//     addJobApplicationButton.addEventListener("click", () =>{
+//         const jobTitle = prompt("Enter job title:");
+//         const companyName = prompt("Enter company name:");
+//         const dateApplied = prompt("Enter date applied (YYYY-MM-DD):");
+//         const status = prompt("Enter application status (e.g., Applied, Interviewing, Hired):");
+
+//         if (jobTitle && companyName && dateApplied && status) {
+//             applications.push({ jobTitle, companyName, date: dateApplied, status });
+//             chrome.storage.local.set({applications}, populateApplicationDashboard);
+//         } else {
+//             alert("Please fill in all fields.");
+//         }
+//     });
+//   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const profileSelector = document.getElementById('profileSelector');
     const addProfileButton = document.getElementById('addProfile');
@@ -360,20 +583,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveProfileDetailsButton = document.getElementById('saveProfileDetails');
     const exportDataButton = document.getElementById('exportData');
     const importDataButton = document.getElementById('importData');
+    const emailDataButton = document.getElementById('emailData');
     const applicationDashboard = document.getElementById('applicationDashboard');
     const addJobApplicationButton = document.getElementById("addJobApplication");
     const restoreJobApplicationButton = document.getElementById("restoreJobApplications");
+    const addJobApplicationButton = document.getElementById('addJobApplication');
+    const importDataInput = document.getElementById('importDataInput');
   
     const profileNameInput = document.getElementById('profileName');
     const profileSurnameInput = document.getElementById('profileSurname');
     const portfolioLinkInput = document.getElementById('portfolioLink');
     const personalSummaryInput = document.getElementById('personalSummary');
     const certificatesInput = document.getElementById('certificates');
-
-    const profileFieldInput = document.getElementById("profileField");
-    const formFieldInput = document.getElementById("formField");
-    const addMappingButton = document.getElementById("addMapping");
-    const mappingList = document.getElementById("mappingList");
   
     let profiles = {};
     let currentProfile = 'default';
@@ -393,6 +614,13 @@ document.addEventListener('DOMContentLoaded', () => {
       populateApplicationDashboard();
       populateMappingList();
       populateSavedFormsList();
+  
+    chrome.storage.local.get(['profiles', 'applications'], (result) => {
+      profiles = result.profiles || { default: {} };
+      applications = result.applications || [];
+      populateProfileSelector();
+      populateProfileDetails();
+      populateApplicationDashboard();
     });
   
     profileSelector.addEventListener('change', (event) => {
@@ -428,49 +656,23 @@ document.addEventListener('DOMContentLoaded', () => {
       applicationDashboard.innerHTML = '';
       applications.forEach((app, index) => {
         const li = document.createElement('li');
-        li.textContent = `${app.companyName} - ${app.jobTitle} (Applied: ${app.date})`;
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = "Delete";
-
-
-        deleteButton.addEventListener("click", () =>{
-            applications.splice(index, 1);
-            chrome.storage.local.set({ applications},populateApplicationDashboard);
-        });
-
-        li.appendChild(deleteButton);
+        li.innerHTML = `
+          <div>
+            <strong>${app.companyName}</strong> - ${app.jobTitle}<br>
+            <small>Date Applied: ${app.date} | Status: ${app.status}</small>
+          </div>
+          <button class="deleteApplication" data-index="${index}">Delete</button>
+        `;
         applicationDashboard.appendChild(li);
       });
-    }
-
-    function populateMappingList() {
-        mappingList.innerHTML = '';
-        mappings.forEach((mapping, index) => {
-          const li = document.createElement('li');
-          li.textContent = `${mapping.profileField} → ${mapping.formField}`;
-    
-          const deleteButton = document.createElement('button');
-          deleteButton.textContent = 'Delete';
-          deleteButton.addEventListener('click', () => {
-            mappings.splice(index, 1);
-            chrome.storage.local.set({ mappings }, populateMappingList);
-          });
-    
-          li.appendChild(deleteButton);
-          mappingList.appendChild(li);
+  
+      document.querySelectorAll('.deleteApplication').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          const index = event.target.dataset.index;
+          applications.splice(index, 1);
+          chrome.storage.local.set({ applications }, populateApplicationDashboard);
         });
-
-
-        profileFieldInput.innerHTML = '';
-        const currentProfileData = profiles[currentProfile] || {};
-        for (const key in currentProfileData){
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = key;
-            profileFieldInput.appendChild(option);
-        }
-
+      });
     }
 
     function populateSavedFormsList(){
@@ -541,59 +743,67 @@ document.addEventListener('DOMContentLoaded', () => {
   
     exportDataButton.addEventListener('click', () => {
       const data = { profiles, applications };
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      chrome.downloads.download({ url, filename: 'form-filler-data.json' });
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'form-filler-data.json';
+      link.click();
+      URL.revokeObjectURL(url);
     });
   
     importDataButton.addEventListener('click', () => {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'application/json';
-      fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-          const data = JSON.parse(reader.result);
-          profiles = data.profiles || {};
-          applications = data.applications || [];
-          mappings = data.mappings || [];
+      importDataInput.click(); 
+    });
+  
+    importDataInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const importedData = JSON.parse(reader.result);
+          profiles = importedData.profiles || {};
+          applications = importedData.applications || [];
           chrome.storage.local.set({ profiles, applications }, () => {
+            alert('Data imported successfully!');
             populateProfileSelector();
             populateApplicationDashboard();
-            populateMappingList();
           });
-        };
-        reader.readAsText(file);
-      });
-      fileInput.click();
-    });
-
-    addMappingButton.addEventListener("click", ()=>{
-        const profileField = profileFieldInput.value;
-        const formField = formFieldInput.value;
-
-        if(!profileField || !formField){
-            alert('Both fields are required.');
-            return;
+        } catch (error) {
+          alert('Failed to import data. Ensure the file is valid JSON.');
         }
-
-        mappings.push({ profileField, formField });
-        chrome.storage.local.set({ mappings }, populateMappingList);
+      };
+      reader.readAsText(file);
     });
-
-    addJobApplicationButton.addEventListener("click", () =>{
-        const jobTitle = prompt("Enter job title:");
-        const companyName = prompt("Enter company name:");
-        const dateApplied = prompt("Enter date applied (YYYY-MM-DD):");
-        const status = prompt("Enter application status (e.g., Applied, Interviewing, Hired):");
-
-        if (jobTitle && companyName && dateApplied && status) {
-            applications.push({ jobTitle, companyName, date: dateApplied, status });
-            chrome.storage.local.set({applications}, populateApplicationDashboard);
-        } else {
-            alert("Please fill in all fields.");
-        }
+  
+    emailDataButton.addEventListener('click', () => {
+      const data = { profiles, applications };
+      const recipientEmail = prompt('Enter recipient email address:');
+      if (!recipientEmail) {
+        alert('Email address is required.');
+        return;
+      }
+  
+      const mailtoLink = `mailto:${recipientEmail}?subject=Form%20Filler%20Data&body=${encodeURIComponent(
+        JSON.stringify(data, null, 2)
+      )}`;
+      window.location.href = mailtoLink;
+    });
+  
+    addJobApplicationButton.addEventListener('click', () => {
+      const jobTitle = prompt('Enter job title:');
+      const companyName = prompt('Enter company name:');
+      const dateApplied = prompt('Enter date applied (YYYY-MM-DD):');
+      const status = prompt('Enter application status (e.g., Applied, Interviewing, Hired):');
+  
+      if (jobTitle && companyName && dateApplied && status) {
+        applications.push({ jobTitle, companyName, date: dateApplied, status });
+        chrome.storage.local.set({ applications }, populateApplicationDashboard);
+      } else {
+        alert('Please fill in all fields.');
+      }
     });
 
     restoreJobApplicationButton.addEventListener("click", () =>{

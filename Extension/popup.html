@@ -102,7 +102,7 @@
 
 
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -169,6 +169,94 @@
     <button id="restoreJobApplications">Restore Job Applications</button>
     <button id="exportData">Export Data</button>
     <button id="importData">Import Data</button>
+
+    <button id="saveForm">Save Form</button>
+    <button id="fillForm">Fill Form</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Form Filler</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Auto Form Filler</h1>
+    <p>Manage your profiles and data:</p>
+
+    <select id="profileSelector"></select>
+    <button id="addProfile">Add Profile</button>
+    <button id="deleteProfile">Delete Profile</button>
+
+    <div id="profileDetails">
+      <h2>Profile Details</h2>
+      <label>
+        Name:
+        <input id="profileName" type="text" placeholder="Name">
+      </label>
+      <label>
+        Surname:
+        <input id="profileSurname" type="text" placeholder="Surname">
+      </label>
+      <label>
+        Portfolio Link:
+        <input id="portfolioLink" type="url" placeholder="https://portfolio.com">
+      </label>
+      <label>
+        Personal Summary:
+        <textarea id="personalSummary" placeholder="Add your summary..."></textarea>
+      </label>
+      <label>
+        Certificates:
+        <textarea id="certificates" placeholder="List your certificates"></textarea>
+      </label>
+      <button id="saveProfileDetails">Save Profile Details</button>
+    </div>
+
+    <h2>Form Field Mapping</h2>
+    <div id="mappingContainer">
+        <label for="profileField">Profile Field:</label>
+        <select id="profileField"></select>
+
+        <label for="formField">Form Field:</label>
+        <input id="formField" type="text" placeholder="full name">
+
+        <button id="addMapping">Add Mapping</button>
+    </div>
+    <ul id="mappingList"></ul>
+
+
+    <h2>Cover Letter</h2>
+    <input id="jobTitle" type="text" placeholder="Job Title">
+    <input id="companyName" type="text" placeholder="Company Name">
+    <button id="generateCoverLetter">Generate Cover Letter</button>
+    <textarea id="coverLetter" placeholder="Generated Cover Letter..."></textarea>
+
+    <h2>Job Application Dashboard</h2>
+    <ul id="applicationDashboard"></ul>
+    <button id="addJobApplication">Add Job Application</button>
+
+    <div id="dataTransfer">
+      <h2>Data Transfer</h2>
+      <button id="exportData">Export Data</button>
+      <input type="file" id="importDataInput" style="display: none;">
+      <button id="importData">Import Data</button>
+      <button id="emailData">Send Data via Email</button>
+    </div>
 
     <button id="saveForm">Save Form</button>
     <button id="fillForm">Fill Form</button>
