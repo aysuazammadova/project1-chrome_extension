@@ -9,8 +9,7 @@ function autofillForm(){
         if (selectedProfile) {
             const profileData = selectedProfile.data;
 
-            const inputs = document.querySelectorAll("input, textarea, select");
-            inputs.forEach((input) => {
+            document.querySelectorAll("input, textarea, select").forEach(input =>{
                 if (input.name === "name") input.value = profileData.name || "";
                 if (input.name === "experience") input.value = profileData.experience || "";
                 if (input.name === "education") input.value = profileData.education || "";
@@ -20,12 +19,13 @@ function autofillForm(){
                 if (input.name === "personal_summaries") input.value = profileData.personal_summary || "";
             });
 
-            for (const [key, value] of Object.entries(profileData)){
-                if (key.startsWith("customField")){
-                    const customInput = document.querySelector(`[name="${key}"]`);
-                    if (customInput) customInput.value = value;
-                }
-            }
+
+            Object.entries(profileData).forEach(([key, value]) => {
+              if (key.startsWith("customField")){
+                const customInput = document.querySelector(`[name="${key}"]`);
+                if (customInput) customInput.value = value;
+              }
+            });
         } else {
             console.error('No profile selected or profiles are empty.');
         }
